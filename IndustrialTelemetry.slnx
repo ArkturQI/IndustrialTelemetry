@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="IndustrialTelemetry.API/IndustrialTelemetry.API.csproj" />
+  <Project Path="IndustrialTelemetry.Application/IndustrialTelemetry.Application.csproj" />
+  <Project Path="IndustrialTelemetry.Domain/IndustrialTelemetry.Domain.csproj" />
+  <Project Path="IndustrialTelemetry.Infrastructure/IndustrialTelemetry.Infrastructure.csproj" />
+</Solution>
