@@ -44,13 +44,11 @@ public class TelemetryAlertWorker : BackgroundService
         using var scope = _serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<TelemetryDbContext>();
 
-        // Получаем последние записи телеметрии за последние 5 минут
         var thresholdTime = DateTime.UtcNow.AddMinutes(-5);
         var recentTelemetry = await dbContext.TelemetryRecords
             .Where(t => t.Timestamp >= thresholdTime)
             .ToListAsync(cancellationToken);
 
-        // Группируем по оборудованию и проверяем критические значения
         var groupedByEquipment = recentTelemetry.GroupBy(t => t.EquipmentId);
 
         foreach (var group in groupedByEquipment)
@@ -60,7 +58,6 @@ public class TelemetryAlertWorker : BackgroundService
 
             if (latestRecord == null) continue;
 
-            // 🔥 Пример критического значения: температура > 100
             if (latestRecord.MetricType == "Temperature" && latestRecord.Value > 100)
             {
                 var equipment = await dbContext.Equipments
@@ -70,7 +67,6 @@ public class TelemetryAlertWorker : BackgroundService
                 {
                     equipment.UpdateStatus(EquipmentStatus.Critical);
 
-                    // Используем публичный конструктор вместо object initializer
                     var alert = new Alert(equipmentId, $"Critical temperature detected: {latestRecord.Value}°C");
 
                     dbContext.Alerts.Add(alert);
